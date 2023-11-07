@@ -57,7 +57,13 @@ while True:
             continue
     
     elif(command == 'd'):
-        ...
+        amount_depoist = float(input('Qual o valor você deseja DEPOISTAR?: '))
+        if (amount_depoist > 0):
+            print('Depositando...')
+            balance += amount_depoist
+            print('DEPOSITO efetuado com SUCESSO!')
+            extract.append(f'DEPOSITO: R$ {amount_depoist:.2f}')
+            continue
     
     elif(command == 'e'):
         ...
