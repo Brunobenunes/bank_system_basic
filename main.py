@@ -65,11 +65,16 @@ while True:
             extract.append(f'DEPOSITO: R$ {amount_depoist:.2f}')
             continue
     
-    elif(command == 'e'):
-        ...
-    
-    elif(command == 'q'):
+    if (command == 'e'):
+        extract_system(extract)
+        continue
+
+    if (command == 'q'):
+        print('Saindo...')
+        print()
+        print('Tenha um ótimo Dia')
         break
-    
+
     else:
+        print('Insira um comando válido')
         continue
