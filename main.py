@@ -1,3 +1,22 @@
+menu_login = '''
+########## Bank DIO ##########
+     #### Bem Vindo(a) ####
+     
+     [e] Entrar
+     [c] Cadastrar Usuário
+     [s] Sair
+
+'''
+
+optins_menu = '''
+    ## Bank DIO System ##
+
+    [c] Criar Conta-Corrente
+    [m] Menu de Transferencias
+
+    
+'''
+
 menu = '''
 
     ## Bank DIO System ##
@@ -37,7 +56,13 @@ accounts = [
     }
 ]
 
-def create_user(cpf: str,name, birth_year, **adress):
+def create_user():
+    cpf = input('Digite seu CPF: ')
+    name = input('Digite seu NOME: *Nome e Sobrenome*: ')
+    birth_year = int(input('Digite seu ano de Nascimento: '))
+    street = input('Digite Seu endereço: *RUA e NUMERO e COMPLEMENTO*: ')
+    district = input('Digite Seu Bairro: ')
+    state = input('Digite Seu Estado: ')
     cpf_format = ''.join(cpf.split('.'))
     cpf = ''.join(cpf_format.split('-'))
 
@@ -45,7 +70,7 @@ def create_user(cpf: str,name, birth_year, **adress):
         cpf: {
             'name': name,
             'birth_year': birth_year,
-            'adress': f"{adress['street']} - {adress['district']}/{adress['state']} "
+            'adress': f'{street} - {district}/{state}'
         }
     }
     return new_user
