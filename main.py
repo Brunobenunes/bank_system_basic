@@ -17,7 +17,7 @@ MAX_WITHDRAW = 500
 balance = 0
 extract = []
 
-def extract_system(list_extract):
+def extract_system(balance, / , *, list_extract):
     print('Extrato'.center(10, '#'))
     for operation in list_extract:
         print(operation)
@@ -87,7 +87,7 @@ while True:
         continue
     
     if (command == 'e'):
-        extract_system(extract)
+        extract_system(balance, list_extract=extract)
         continue
 
     if (command == 'q'):
