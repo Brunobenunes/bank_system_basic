@@ -79,11 +79,11 @@ while True:
         elif (amount_withdraw <= balance):
             balance, extract = withdraw_system(balance=balance, extract=extract, amount_withdraw=amount_withdraw)
             count_withdraws += 1
-            print(count_withdraws)
+            print(balance)
             continue
 
     elif(command == 'd'):
-        balance += deposit_system(balance, extract)
+        balance = deposit_system(balance, extract)
         continue
     
     if (command == 'e'):
