@@ -17,12 +17,44 @@ MAX_WITHDRAW = 500
 balance = 0
 extract = []
 
+users = [
+    {
+        'CPF': {
+            'name': '',
+            'birth_year': 123,
+            'adress': '',
+            'accounts': [],
+        }
+    }
+]
+
+accounts = [
+    {
+        'account_id': {
+            'branch': 0001,
+            'user': []
+        }
+    }
+]
+
+def create_user(cpf: str,name, birth_year, **adress):
+    cpf_format = ''.join(cpf.split('.'))
+    cpf = ''.join(cpf_format.split('-'))
+
+    new_user = {
+        cpf: {
+            'name': name,
+            'birth_year': birth_year,
+            'adress': f"{adress['street']} - {adress['district']}/{adress['state']} "
+        }
+    }
+    return new_user
+
 def extract_system(balance, / , *, list_extract):
     print('Extrato'.center(10, '#'))
     for operation in list_extract:
         print(operation)
     print(f'##### Saldo Atual: R$ {balance:.2f}')
-
 
 def deposit_system(balance, extract: list):
     amount_deposit = float(input('Qual o valor você deseja DEPOISTAR?: '))
