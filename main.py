@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 menu_login = '''
 ########## Bank DIO ##########
      #### Bem Vindo(a) ####
@@ -49,7 +51,7 @@ users = [
     },
     {
         '123': {
-            'name': 'Bruno Benunes',
+            'name': 'Bruno Henrique',
             'birth_year': 1999,
             'adress': '',
             'accounts': ['3'],
@@ -94,6 +96,15 @@ accounts = [
         }
     }
 ]
+
+BASE_ACCOUNT = {
+    'branch': 0o1,
+    'balance': 50,
+    'count_withdraws': 0,
+    'MAX_WITHDRAW': 500,
+    'extract': [],
+    'DAILY_WITHDRAW': 3,
+}
 
 def create_user():
     cpf = input('Digite seu CPF: ')
@@ -241,9 +252,25 @@ def options_menu(user):
                 continue
             transfer_operations(account_choice(user, account))
         elif (command == 'c'):
-            ...
+            accounts.append(create_accounts(user, BASE_ACCOUNT))
         elif (command == 'q'):
             break
+
+def create_accounts(user, BASE_ACCOUNT: dict):
+    new_account = deepcopy(BASE_ACCOUNT)
+    user_id = ''
+    for user_ in users:
+        if (user_[list(user_.keys())[0]]['name'] == user['name']):
+            user_id = list(user_.keys())[0]
+    
+    new_account['user'] = user_id
+    account_id = str(int(list(accounts[-1].keys())[0]) + 1)
+    user['accounts'].append(account_id)
+    return {
+        account_id : new_account
+    }
+
+
 
 while True:
     command = input(menu_login)
