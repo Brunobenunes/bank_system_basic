@@ -40,74 +40,34 @@ balance = 0
 extract = []
 
 users = [
-    {
-        '02133622608': {
-            'name': 'Bruno Benunes',
-            'birth_year': 199,
-            'adress': '',
-            'accounts': ['1', '2'],
-            'password': '123abc'
-        }
-    },
-    {
-        '123': {
-            'name': 'Bruno Henrique',
-            'birth_year': 1999,
-            'adress': '',
-            'accounts': ['3'],
-            'password': '123'
-        }
-    }
 
 ]
 
 accounts = [
-    {
-        '1': {
-            'branch': 0o1,
-            'user': '0213362608',
-            'balance': 1000,
-            'count_withdraws': 0,
-            'MAX_WITHDRAW': 500,
-            'extract': [],
-            'DAILY_WITHDRAW': 3,
-        },
-    },
-    {
-        '2': {
-            'branch': 0o1,
-            'user': '0213362608',
-            'balance': 5000,
-            'count_withdraws': 0,
-            'MAX_WITHDRAW': 500,
-            'extract': [],
-            'DAILY_WITHDRAW': 3,
-        },
-    },
-    {
-        '3': {
-            'branch': 0o1,
-            'user': '123',
-            'balance': 50,
-            'count_withdraws': 0,
-            'MAX_WITHDRAW': 500,
-            'extract': [],
-            'DAILY_WITHDRAW': 3,
-        }
-    }
 ]
 
 BASE_ACCOUNT = {
     'branch': 0o1,
-    'balance': 50,
+    'balance': 0,
     'count_withdraws': 0,
     'MAX_WITHDRAW': 500,
     'extract': [],
     'DAILY_WITHDRAW': 3,
 }
 
+def check_user(cpf):
+    for user in users:
+        if (cpf in user):
+            return True
+    return False
+
+
 def create_user():
     cpf = input('Digite seu CPF: ')
+    if (check_user(cpf)):
+        print('\n#'.center(10,'#'))
+        return print('Esse Usuario já existe!')
+    
     name = input('Digite seu NOME: *Nome e Sobrenome*: ')
     birth_year = int(input('Digite seu ano de Nascimento: '))
     street = input('Digite Seu endereço: *RUA e NUMERO e COMPLEMENTO*: ')
@@ -122,10 +82,11 @@ def create_user():
             'name': name,
             'birth_year': birth_year,
             'adress': f'{street} - {district}/{state}',
-            'password': password
+            'password': password,
+            'accounts': []
         }
     }
-    return new_user
+    return users.append(new_user)
 
 def extract_system(balance, / , *, list_extract):
     print('Extrato'.center(10, '#'))
@@ -156,15 +117,13 @@ def withdraw_system(**kwargs):
         print('Sacando....')
             
         new_balance -= amount_withdraw
-        print()
-        print(f'Saque realizado com SUCESSO, saldo atual: {new_balance:.2f}')
+        print(f'\nSaque realizado com SUCESSO, saldo atual: {new_balance:.2f}')
         extract.append(f'SAQUE: R$ -{amount_withdraw}')
         return new_balance, extract
         
     else:
         print('Sacando....')
-        print()
-        print(f'NÂO possível realizar o SAQUE por falta de saldo. Seu saldo Atual : {balance:.2f}')
+        print(f'\nNÂO possível realizar o SAQUE por falta de saldo. Seu saldo Atual : {balance:.2f}')
         return new_balance, extract
 
 def transfer_operations(account_number):
@@ -209,8 +168,7 @@ def transfer_operations(account_number):
 
             if (command == 'q'):
                 print('Saindo...')
-                print()
-                print('Tenha um ótimo Dia')
+                print('\nTenha um ótimo Dia')
                 break
 
             else:
@@ -246,11 +204,15 @@ def options_menu(user):
     while True:
         command = input(options_menu_display)
         if (command == 'a'):
-            account = input(input_account_choice(user))
-            if (int(account) > len(user['accounts'])):
-                print('Conta não encontrada')
+            if (user['accounts']):
+                account = input(input_account_choice(user))
+                if (int(account) > len(user['accounts'])):
+                    print('Conta não encontrada')
+                    continue
+                transfer_operations(account_choice(user, account))
+            else:
+                print('Você ainda não possuiu nenhuma conta!')
                 continue
-            transfer_operations(account_choice(user, account))
         elif (command == 'c'):
             accounts.append(create_accounts(user, BASE_ACCOUNT))
         elif (command == 'q'):
@@ -264,7 +226,10 @@ def create_accounts(user, BASE_ACCOUNT: dict):
             user_id = list(user_.keys())[0]
     
     new_account['user'] = user_id
-    account_id = str(int(list(accounts[-1].keys())[0]) + 1)
+    last_account_id = 0
+    if (len(accounts)):
+        last_account_id = len(accounts)
+    account_id = last_account_id
     user['accounts'].append(account_id)
     return {
         account_id : new_account
