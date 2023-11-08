@@ -4,15 +4,16 @@ menu_login = '''
      
      [e] Entrar
      [c] Cadastrar Usuário
-     [s] Sair
+     [q] Sair
 
 '''
 
-optins_menu = '''
+options_menu_display = '''
     ## Bank DIO System ##
 
     [c] Criar Conta-Corrente
-    [m] Menu de Transferencias
+    [a] Acessar Contas
+    [q] Sair
 
     
 '''
@@ -38,21 +39,54 @@ extract = []
 
 users = [
     {
-        'CPF': {
-            'name': '',
-            'birth_year': 123,
+        '02133622608': {
+            'name': 'Bruno Benunes',
+            'birth_year': 199,
             'adress': '',
-            'accounts': [],
+            'accounts': ['1', '2'],
+            'password': '123abc'
+        }
+    },
+    {
+        '123': {
+            'name': 'Bruno Benunes',
+            'birth_year': 1999,
+            'adress': '',
+            'accounts': ['3'],
+            'password': '123'
         }
     }
+
 ]
 
 accounts = [
     {
         '1': {
             'branch': 0o1,
-            'user': '123123123123',
+            'user': '0213362608',
             'balance': 1000,
+            'count_withdraws': 0,
+            'MAX_WITHDRAW': 500,
+            'extract': [],
+            'DAILY_WITHDRAW': 3,
+        },
+    },
+    {
+        '2': {
+            'branch': 0o1,
+            'user': '0213362608',
+            'balance': 5000,
+            'count_withdraws': 0,
+            'MAX_WITHDRAW': 500,
+            'extract': [],
+            'DAILY_WITHDRAW': 3,
+        },
+    },
+    {
+        '3': {
+            'branch': 0o1,
+            'user': '123',
+            'balance': 50,
             'count_withdraws': 0,
             'MAX_WITHDRAW': 500,
             'extract': [],
@@ -68,6 +102,7 @@ def create_user():
     street = input('Digite Seu endereço: *RUA e NUMERO e COMPLEMENTO*: ')
     district = input('Digite Seu Bairro: ')
     state = input('Digite Seu Estado: ')
+    password = input('Digite sua SENHA: ')
     cpf_format = ''.join(cpf.split('.'))
     cpf = ''.join(cpf_format.split('-'))
 
@@ -75,7 +110,8 @@ def create_user():
         cpf: {
             'name': name,
             'birth_year': birth_year,
-            'adress': f'{street} - {district}/{state}'
+            'adress': f'{street} - {district}/{state}',
+            'password': password
         }
     }
     return new_user
@@ -120,7 +156,8 @@ def withdraw_system(**kwargs):
         print(f'NÂO possível realizar o SAQUE por falta de saldo. Seu saldo Atual : {balance:.2f}')
         return new_balance, extract
 
-def transfer_operations(account):
+def transfer_operations(account_number):
+        account = find_account_with_number(account_number)
         DAILY_WITHDRAW = account['DAILY_WITHDRAW']
         count_withdraws = account['count_withdraws']
         MAX_WITHDRAW = account['MAX_WITHDRAW']
@@ -169,4 +206,59 @@ def transfer_operations(account):
                 print('Insira um comando válido')
                 continue
 
-transfer_operations(accounts[0]['1'])
+def find_account_with_number(account_number):
+    for acc in accounts :
+        if (list(acc.keys())[0] == account_number):
+            return acc[account_number]
+
+def check_user_login(user, password):
+    for user_ in users:
+        if (list(user_.keys())[0] == user):
+            if (user_[user]['password'] == password):
+                return True, user_[user]
+            else:
+                return False
+
+def input_account_choice(user):
+    account_options = []
+    for index, acc in enumerate(user['accounts']):
+        account_options.append(f'[{index + 1}]: {acc}')
+    print('## Bank DIO System ##'.center(10, ' '))
+    print(*account_options, sep='\n')
+    print()
+    return 'Sua Opção: '
+
+def account_choice(user, account):
+    return user['accounts'][int(account) - 1]
+
+def options_menu(user):
+    while True:
+        command = input(options_menu_display)
+        if (command == 'a'):
+            account = input(input_account_choice(user))
+            if (int(account) > len(user['accounts'])):
+                print('Conta não encontrada')
+                continue
+            transfer_operations(account_choice(user, account))
+        elif (command == 'c'):
+            ...
+        elif (command == 'q'):
+            break
+
+while True:
+    command = input(menu_login)
+
+    if (command == 'c'):
+        create_user()
+        continue
+    elif (command == 'e'):
+        user = input('Digite seu usuario: *CPF*: ')
+        password = input('Digite sua senha: ')
+        if (check_user_login(user, password)):
+            _, user_loged = check_user_login(user, password)
+            print('Bem vindo!')
+            options_menu(user_loged)
+        else:
+            print('SENHA ou USUARIO INCORRETO')
+    elif (command == 'q'):
+        break
