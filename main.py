@@ -49,9 +49,14 @@ users = [
 
 accounts = [
     {
-        'account_id': {
-            'branch': 0001,
-            'user': []
+        '1': {
+            'branch': 0o1,
+            'user': '123123123123',
+            'balance': 1000,
+            'count_withdraws': 0,
+            'MAX_WITHDRAW': 500,
+            'extract': [],
+            'DAILY_WITHDRAW': 3,
         }
     }
 ]
@@ -115,44 +120,53 @@ def withdraw_system(**kwargs):
         print(f'NÂO possível realizar o SAQUE por falta de saldo. Seu saldo Atual : {balance:.2f}')
         return new_balance, extract
 
-while True:
-    command = input(menu)
-
-    if (command == 's'):
-        if (count_withdraws == DAILY_WITHDRAW):
-            print('Você já atingiu o seu limite máximo de saque DIÁRIO')
-            continue
-
-        amount_withdraw = float(input('Quanto deseja sacar?: '))
+def transfer_operations(account):
+        DAILY_WITHDRAW = account['DAILY_WITHDRAW']
+        count_withdraws = account['count_withdraws']
+        MAX_WITHDRAW = account['MAX_WITHDRAW']
+        balance = account['balance']
+        extract = account['extract']
         
-        if (amount_withdraw < 0):
-            print('Falha no Saque, insira um valor POSITIVO')
-            continue
-        
-        elif (amount_withdraw > MAX_WITHDRAW):
-            print(f'Falha no Saque. O valor máximo para SAQUE é de R${MAX_WITHDRAW:.2f}')
-            continue
+        while True:
+            command = input(menu)
 
-        elif (amount_withdraw <= balance):
-            balance, extract = withdraw_system(balance=balance, extract=extract, amount_withdraw=amount_withdraw)
-            count_withdraws += 1
-            print(balance)
-            continue
+            if (command == 's'):
+                if (count_withdraws == DAILY_WITHDRAW):
+                    print('Você já atingiu o seu limite máximo de saque DIÁRIO')
+                    continue
 
-    elif(command == 'd'):
-        balance = deposit_system(balance, extract)
-        continue
-    
-    if (command == 'e'):
-        extract_system(balance, list_extract=extract)
-        continue
+                amount_withdraw = float(input('Quanto deseja sacar?: '))
+                
+                if (amount_withdraw < 0):
+                    print('Falha no Saque, insira um valor POSITIVO')
+                    continue
+                
+                elif (amount_withdraw > MAX_WITHDRAW):
+                    print(f'Falha no Saque. O valor máximo para SAQUE é de R${MAX_WITHDRAW:.2f}')
+                    continue
 
-    if (command == 'q'):
-        print('Saindo...')
-        print()
-        print('Tenha um ótimo Dia')
-        break
+                elif (amount_withdraw <= balance):
+                    balance, extract = withdraw_system(balance=balance, extract=extract, amount_withdraw=amount_withdraw)
+                    count_withdraws += 1
+                    print(balance)
+                    continue
 
-    else:
-        print('Insira um comando válido')
-        continue
+            elif(command == 'd'):
+                balance = deposit_system(balance, extract)
+                continue
+
+            if (command == 'e'):
+                extract_system(balance, list_extract=extract)
+                continue
+
+            if (command == 'q'):
+                print('Saindo...')
+                print()
+                print('Tenha um ótimo Dia')
+                break
+
+            else:
+                print('Insira um comando válido')
+                continue
+
+transfer_operations(accounts[0]['1'])
